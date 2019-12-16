@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-cn"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"><meta name="format-detection" content="telephone=no"><meta name="format-detection" content="email=no"><meta name="description" content="Buddy-Deus's Blog, share experiences and ideas"><meta name="keywords" content="buddydeus, jShow, jshow, Node.js, nodejs"><meta http-equiv="Expires" content="0"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Cache-control" content="no-cache"><meta http-equiv="Cache" content="no-cache"><title>Docker-Compose学习笔记 - Buddy-Deus's Blog</title><script src="https://code.jquery.com/jquery-3.3.1.min.js"></script><script src="https://www.googletagmanager.com/gtag/js?id=UA-141925105-1" async></script><script src="/images/global.js"></script><link rel="stylesheet" href="/css/main_style.min.css"><link rel="icon" href="/favicon.ico"></head><body><input id="navi" type="checkbox"><label class="navi-button light" for="navi">菜单</label><div class="main-navication"><div class="owner"><a href="/index.html" target="_self"><i class="icon home"></i><span>首页</span></a><a href="https://github.com/j-show/jshow" target="_blank"><i class="icon github"></i><span>Github</span></a><a href="/tags/index-zh.html" target="_self"><i class="icon tag"></i><span>标签</span></a><a href="/categories/index-zh.html" target="_self"><i class="icon category"></i><span>类别</span></a><a href="/about/index-zh.html" target="_self"><i class="icon author"></i><span>关于我</span></a></div></div><div class="wrapper" id="wrap"><div class="post-header"><div class="background"><img src="/images/post_background.jpg"></div><div class="post-title"><h1 class="title">Docker-Compose学习笔记</h1><ul class="meta"><li><i class="icon author"></i>Buddy-Deus</li><li><i class="icon clock"></i><script>document.write(calcTime(1576485177099));</script></li><li><i class="icon calendar"></i>December 13, 2019</li></ul></div></div><div class="article-content" style="max-width:800px"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#YML配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">YML配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#字节"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">字节</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时间"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">时间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#version-amp-配置版本"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">version &amp; 配置版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#networks-amp-网络配置"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">networks &amp; 网络配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#volumes-amp-挂载配置"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">volumes &amp; 挂载配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-amp-服务配置"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">services &amp; 服务配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-build、deploy-amp-服务配置-build、delploy"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">services build、deploy &amp; 服务配置 build、delploy</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#build-amp-构建打包"><span class="post-toc-number">2.7.1.</span> <span class="post-toc-text">build &amp; 构建打包</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#deploy-amp-部署"><span class="post-toc-number">2.7.2.</span> <span class="post-toc-text">deploy &amp; 部署</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#命令操作"><span class="post-toc-number">3.</span> <span class="post-toc-text">命令操作</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#启动与卸载"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">启动与卸载</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#构建、启动、重启、停止"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">构建、启动、重启、停止</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统部署"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">系统部署</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常用配置"><span class="post-toc-number">4.</span> <span class="post-toc-text">常用配置</span></a></li></ol>
+<!DOCTYPE html><html lang="zh-cn"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"><meta name="format-detection" content="telephone=no"><meta name="format-detection" content="email=no"><meta name="description" content="Buddy-Deus's Blog, share experiences and ideas"><meta name="keywords" content="buddydeus, jShow, jshow, Node.js, nodejs"><meta http-equiv="Expires" content="0"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Cache-control" content="no-cache"><meta http-equiv="Cache" content="no-cache"><title>Docker-Compose学习笔记 - Buddy-Deus's Blog</title><script src="https://code.jquery.com/jquery-3.3.1.min.js"></script><script src="https://www.googletagmanager.com/gtag/js?id=UA-141925105-1" async></script><script src="/images/global.js"></script><link rel="stylesheet" href="/css/main_style.min.css"><link rel="icon" href="/favicon.ico"></head><body><input id="navi" type="checkbox"><label class="navi-button light" for="navi">菜单</label><div class="main-navication"><div class="owner"><a href="/index.html" target="_self"><i class="icon home"></i><span>首页</span></a><a href="https://github.com/j-show/jshow" target="_blank"><i class="icon github"></i><span>Github</span></a><a href="/tags/index-zh.html" target="_self"><i class="icon tag"></i><span>标签</span></a><a href="/categories/index-zh.html" target="_self"><i class="icon category"></i><span>类别</span></a><a href="/about/index-zh.html" target="_self"><i class="icon author"></i><span>关于我</span></a></div></div><div class="wrapper" id="wrap"><div class="post-header"><div class="background"><img src="/images/post_background.jpg"></div><div class="post-title"><h1 class="title">Docker-Compose学习笔记</h1><ul class="meta"><li><i class="icon author"></i>Buddy-Deus</li><li><i class="icon clock"></i><script>document.write(calcTime(1576485943276));</script></li><li><i class="icon calendar"></i>December 13, 2019</li></ul></div></div><div class="article-content" style="max-width:800px"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#YML配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">YML配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#字节"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">字节</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时间"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">时间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#version-amp-配置版本"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">version &amp; 配置版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#networks-amp-网络配置"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">networks &amp; 网络配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#volumes-amp-挂载配置"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">volumes &amp; 挂载配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-amp-服务配置"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">services &amp; 服务配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-build、deploy-amp-服务配置-build、delploy"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">services build、deploy &amp; 服务配置 build、delploy</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#build-amp-构建打包"><span class="post-toc-number">2.7.1.</span> <span class="post-toc-text">build &amp; 构建打包</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#deploy-amp-部署"><span class="post-toc-number">2.7.2.</span> <span class="post-toc-text">deploy &amp; 部署</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#命令操作"><span class="post-toc-number">3.</span> <span class="post-toc-text">命令操作</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#启动与卸载"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">启动与卸载</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#构建、启动、重启、停止"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">构建、启动、重启、停止</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统部署"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">系统部署</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常用配置"><span class="post-toc-number">4.</span> <span class="post-toc-text">常用配置</span></a></li></ol>
 <blockquote>
 <p>最近在学习k8s，生生感受到k8s那种生产环境的严谨和扩容性。但反过来想了下对于小规模环境k8s显得太重了，所以重新学习了下docker-compose，特此记录下。</p>
 <p><strong><em>在现版本中docker的stack功能以兼容docker-compose功能，以下内容在不安装docker-compose时同样可以使用</em></strong></p>
@@ -132,16 +132,13 @@
 </tr>
 </tbody></table>
 <p>基本上现在docker-ce的版本在18以上。所以，放心的使用3.7吧，如果用老版本docker的话，请自行选择。</p>
-<blockquote>
-<p>这里说明下，大部分教程都会从 <code>services</code> 开始说，但我觉得 <code>networks</code> 、<code>volumes</code> 属于全局性的功能配置，会对 <code>services</code> 中的配置造成一定影响，所以先行说明。</p>
+<p>大部分教程都会从 <code>services</code> 开始说，但我觉得 <code>networks</code> 、<code>volumes</code> 属于全局性的功能配置，会对 <code>services</code> 中的配置造成一定影响，所以先行说明。</p>
 <p>除了 <code>version</code> 必须是第一个 <code>networks</code>、<code>volumes</code>、<code>services</code> 顺序没有严格要求。</p>
-</blockquote>
 <h2 id="networks-amp-网络配置"><a href="#networks-amp-网络配置" class="headerlink" title="networks &amp; 网络配置"></a>networks &amp; 网络配置</h2><p>这个配置项对应了 <code>docker network create [OPTIONS]</code> 命令中的内容，可以用于创建私有网络。</p>
-<blockquote>
 <p><code>networks</code> 的配置，作用于整个docker全局，所以可以用于一键化项目部署。</p>
-<p>在docker-compose起效时都会存在。手动 <code>docker run --net</code> 方式同样可以使用创建的网络</p>
-<p>但同时，当docker-compose被终止时，创建的网络会被删除，引用网络的容器会造成异常</p>
-<p><strong><em>注意：networks必然会创建一个网络，所以名称不允许重复（包括已创建网络，只的是<code>name</code>字段）</em></strong></p>
+<p>在docker-compose起效时都会存在。手动 <code>docker run --net</code> 方式同样可以使用创建的网络<br>但同时，当docker-compose被终止时，创建的网络会被删除，引用网络的容器会造成异常</p>
+<blockquote>
+<p><strong><em>注意：networks必然会创建一个网络，所以名称不允许重复（包括已创建网络，指的是<code>name</code>字段）</em></strong></p>
 </blockquote>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">networks:</span></span><br><span class="line">	<span class="attr">netName:</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">net</span></span><br><span class="line">		<span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">		<span class="attr">ipam:</span></span><br><span class="line">			<span class="attr">driver:</span> <span class="string">default</span></span><br><span class="line">			<span class="attr">config:</span></span><br><span class="line">				<span class="bullet">-</span> <span class="attr">subnet:</span> <span class="number">100.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">/16</span></span><br></pre></td></tr></table></figure>
 
@@ -239,52 +236,49 @@
 </blockquote>
   <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">env_file:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">./test.env</span></span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>test.env  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">REDIS_PORT=6379</span></span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
+<hr>
+</li>
+<li><p><code>networks</code>：网络配置（<strong>这里引用的是 <code>networks</code> 中的 <code>netName</code></strong>）</p>
+<blockquote>
+<p>对应了 <code>docker run --net</code> 参数</p>
+<p>网络配置还有中指定ip地址的方式，比较适用高安全级别的部署要求（比如严格控制容器间的访问情况）</p>
+</blockquote>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">networks:</span></span><br><span class="line">			<span class="attr">netName:</span></span><br><span class="line">				<span class="attr">ipv4_address:</span> <span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">				<span class="attr">ipv6_address:</span> <span class="number">2001</span><span class="string">:3984:3989:10</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>volumes</code>：挂载配置（本地路径:容器路径）</p>
+<blockquote>
+<p>对应了 <code>docker run -v</code> 参数</p>
+<p>挂载配置的本地路径部分，允许与根层的 <code>volumes</code> 配置联合使用，引用 <code>volumeName</code> 即可</p>
+</blockquote>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">volumes:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">volumeName/test:/data</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>以上效果，即引用根层的 <code>volumeName</code> 下的 <code>test</code> 目录挂载至容器中的 <code>/data</code>目录</p>
+<p><strong>volumes配置时允许使用相对路径，相对路径以yml配置文件所在的目录为基准</strong></p>
+</blockquote>
+</li>
+<li><p><code>ports</code>：端口配置（容器端口:外部端口/协议类型）</p>
+<blockquote>
+<p>对应了 <code>docker run -p</code> 参数</p>
+</blockquote>
+</li>
+<li><p><code>depends_on</code>：（<strong>这里引用的是 <code>services</code> 中的 <code>svrName</code></strong>）</p>
+<blockquote>
+<p>可以说 <code>depends_on</code> 配置是docker-compose最重要的功能（个人觉得），它可以设置依赖项目，依赖项目未运行前，本项目处于等待状态。</p>
+<p>但这里要注意 <code>depends_on</code> 中的项目运行顺序是没有先后顺序的</p>
+<p>我们可以通过依赖引用的方式达成顺序执行的目的，但这样会造成配置非常复杂</p>
+</blockquote>
 </li>
 </ul>
 </li>
 </ul>
-<pre><code>    - test.env
-
-    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">REDIS_PORT=6379</span></span><br></pre></td></tr></table></figure>
-
-    ---
-
-- `networks`：网络配置（**这里引用的是 `networks` 中的 `netName`**）
-
-    &gt; 对应了 `docker run --net` 参数
-    &gt;
-    &gt; 网络配置还有中指定ip地址的方式，比较适用高安全级别的部署要求（比如严格控制容器间的访问情况）
-
-    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">networks:</span></span><br><span class="line">			<span class="attr">netName:</span></span><br><span class="line">				<span class="attr">ipv4_address:</span> <span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">				<span class="attr">ipv6_address:</span> <span class="number">2001</span><span class="string">:3984:3989:10</span></span><br></pre></td></tr></table></figure>
-
-
-- `volumes`：挂载配置（本地路径:容器路径）
-
-    &gt; 对应了 `docker run -v` 参数
-    &gt;
-    &gt; 挂载配置的本地路径部分，允许与根层的 `volumes` 配置联合使用，引用 `volumeName` 即可
-
-    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">volumes:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">volumeName/test:/data</span></span><br></pre></td></tr></table></figure>
-
-
-    &gt; 以上效果，即引用根层的 `volumeName` 下的 `test` 目录挂载至容器中的 `/data`目录
-    &gt;
-    &gt; **volumes配置时允许使用相对路径，相对路径以yml配置文件所在的目录为基准**
-
-- `ports`：端口配置（容器端口:外部端口/协议类型）
-
-    &gt; 对应了 `docker run -p` 参数
-
-- `depends_on`：（**这里引用的是 `services` 中的 `svrName`**）
-
-    &gt; 可以说 `depends_on` 配置是docker-compose最重要的功能（个人觉得），它可以设置依赖项目，依赖项目未运行前，本项目处于等待状态。
-    &gt;
-    &gt; 但这里要注意 `depends_on` 中的项目运行顺序是没有先后顺序的
-    &gt;
-    &gt; 我们可以通过依赖引用的方式达成顺序执行的目的，但这样会造成配置非常复杂
-
-&gt; 在services章节，我这里少写了很多配置，比如：`links`、`expose`、`init`、`labels` 诸如此类的，这些并不是无效，但在时间过程中作用有限，有兴趣的可以自行学习</code></pre><hr>
+<p>在services章节，我这里少写了很多配置，比如：<code>links</code>、<code>expose</code>、<code>init</code>、<code>labels</code> 诸如此类的，这些并不是无效，但在时间过程中作用有限，有兴趣的可以自行学习</p>
+<hr>
 <h2 id="services-build、deploy-amp-服务配置-build、delploy"><a href="#services-build、deploy-amp-服务配置-build、delploy" class="headerlink" title="services build、deploy &amp; 服务配置 build、delploy"></a>services build、deploy &amp; 服务配置 build、delploy</h2><p>之前说过services不仅仅是个容器配置，而是参与了服务的整个生命周期，而这就依赖于 <code>build</code>、<code>deploy</code> 配置来实现。</p>
 <p>这两个配置相对独立，分别对应了服务的构建（打包）、部署阶段</p>
 <h3 id="build-amp-构建打包"><a href="#build-amp-构建打包" class="headerlink" title="build &amp; 构建打包"></a>build &amp; 构建打包</h3><blockquote>
@@ -492,26 +486,28 @@
 <li><p>建立服务脚本</p>
   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /etc/rc.d/init.d</span><br><span class="line">$ vi ./docker-compose</span><br></pre></td></tr></table></figure>
 
+<ul>
+<li><p>docker-compose 文件内容</p>
+  <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># chkconfi<span class="variable">g:</span> <span class="number">2345</span> <span class="number">85</span> <span class="number">15</span></span><br><span class="line"># description: docker-compose service</span><br><span class="line"></span><br><span class="line">EXEC=/usr/local/bin/docker-compose</span><br><span class="line">YML=/data/docker/docker-compose.yml</span><br><span class="line"></span><br><span class="line">case $<span class="number">1</span> in</span><br><span class="line">  start)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML <span class="keyword">up</span> -d</span><br><span class="line">    ;;</span><br><span class="line">  <span class="keyword">stop</span>)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML down</span><br><span class="line">    ;;</span><br><span class="line">  restart)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML restart nginx</span><br><span class="line">    ;;</span><br><span class="line">  *)</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"Usage: $0 (start|stop|restart)"</span></span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里说明下，我的部署服务中通过 <code>depends_on</code> 配置让 <code>nginx</code> 在所有服务之后运行，因此可以把它看成一个总服务入口。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>注册服务</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x ./docker-compose</span><br><span class="line">$ chkconfig --add docker-compose</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动服务</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ service start docker-compose</span><br></pre></td></tr></table></figure>
+
 
 </li>
 </ul>
 </li>
 </ul>
-<pre><code>    - docker-compose 文件内容
-
-    <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># chkconfi<span class="variable">g:</span> <span class="number">2345</span> <span class="number">85</span> <span class="number">15</span></span><br><span class="line"># description: docker-compose service</span><br><span class="line"></span><br><span class="line">EXEC=/usr/local/bin/docker-compose</span><br><span class="line">YML=/data/docker/docker-compose.yml</span><br><span class="line"></span><br><span class="line">case $<span class="number">1</span> in</span><br><span class="line">  start)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML <span class="keyword">up</span> -d</span><br><span class="line">    ;;</span><br><span class="line">  <span class="keyword">stop</span>)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML down</span><br><span class="line">    ;;</span><br><span class="line">  restart)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML restart nginx</span><br><span class="line">    ;;</span><br><span class="line">  *)</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"Usage: $0 (start|stop|restart)"</span></span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
-
-
-    &gt; 这里说明下，我的部署服务中通过 `depends_on` 配置让 `nginx` 在所有服务之后运行，因此可以把它看成一个总服务入口。
-
-- 注册服务
-
-    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x ./docker-compose</span><br><span class="line">$ chkconfig --add docker-compose</span><br></pre></td></tr></table></figure>
-
-
-- 启动服务
-
-    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ service start docker-compose</span><br></pre></td></tr></table></figure></code></pre><p>通过这样的方式，就可以完美的运行docker-compose了。</p>
+<p>通过这样的方式，就可以完美的运行docker-compose了。</p>
 <p>当然，如果使用docker stack方式进行集群部署的话，进行适当的脚本改造也可以满足功能</p>
 <h1 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h1><p>这里提供下常用的几种工具配置。</p>
 <p>docker-compose配置路径为 /data/docker/docker-compose.yml</p>
@@ -529,10 +525,11 @@
 <li><p>nginx</p>
   <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">	<span class="attr">container_name:</span> <span class="string">nginx</span></span><br><span class="line">	<span class="attr">image:</span> <span class="attr">nginx:alpine</span></span><br><span class="line">	<span class="attr">networks:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">net</span></span><br><span class="line">	<span class="attr">volumes:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/nginx.conf:/etc/nginx/nginx.conf</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/conf.d:/etc/nginx/conf.d</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/log:/etc/nginx/log</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/ssl:/ssl</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/wwwroot:/wwwroot</span></span><br><span class="line">	<span class="attr">ports:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="number">80</span><span class="string">:80</span></span><br><span class="line">		<span class="bullet">-</span> <span class="number">443</span><span class="string">:443</span></span><br><span class="line">	<span class="attr">depends_on:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">mongodb</span></span><br></pre></td></tr></table></figure>
 
-
-
+<p>  说明</p>
+<blockquote>
+<p><code>volumes</code> 下面的ssl目录绑定，用于ssl证书的导入</p>
+<p><code>depends_on</code> 下面因放所有服务的列表</p>
+</blockquote>
 </li>
 </ul>
-<pre><code>&gt; `volumes` 下面的ssl目录绑定，用于ssl证书的导入
-&gt;
-&gt; `depends_on` 下面因放所有服务的列表</code></pre></div><div class="article-meta" style="max-width:800px"><div class="tags"><i class="icon tag"></i><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker">docker</a></li></ul></div><div class="categories"><i class="icon category"></i><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/study">study</a></li></ul></div></div><ul class="navication"><li class="home"><a href="/"><i class="icon home"></i></a></li><li><a href="/zh/20190615/2212/"><i class="icon arror-right"></i></a></li></ul><div class="page-footer"><div class="bottom"><p class="copyright">© 2019 Buddy-Deus's Blog<br><script type="text/javascript">analytics_google("UA-141925105-1")</script><script type="text/javascript">analytics_cnzz("1277704291")</script><small>POWER BY&nbsp;<a href="https://hexo.io" target="_blank">HEXO</a></small>&nbsp;|&nbsp;<small>THEME BY&nbsp;<a href="https://github.com/BoizZ/hexo-theme-laughing" target="_blank">LAUGHING</a></small></p></div></div></div><div id="dialog" style="display:none;"></div><script type="text/javascript">$(function () { $("#wrap").addClass("done"); $("#languager").Languager(); });</script></body></html>
+</div><div class="article-meta" style="max-width:800px"><div class="tags"><i class="icon tag"></i><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker">docker</a></li></ul></div><div class="categories"><i class="icon category"></i><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/study">study</a></li></ul></div></div><ul class="navication"><li class="home"><a href="/"><i class="icon home"></i></a></li><li><a href="/zh/20190615/2212/"><i class="icon arror-right"></i></a></li></ul><div class="page-footer"><div class="bottom"><p class="copyright">© 2019 Buddy-Deus's Blog<br><script type="text/javascript">analytics_google("UA-141925105-1")</script><script type="text/javascript">analytics_cnzz("1277704291")</script><small>POWER BY&nbsp;<a href="https://hexo.io" target="_blank">HEXO</a></small>&nbsp;|&nbsp;<small>THEME BY&nbsp;<a href="https://github.com/BoizZ/hexo-theme-laughing" target="_blank">LAUGHING</a></small></p></div></div></div><div id="dialog" style="display:none;"></div><script type="text/javascript">$(function () { $("#wrap").addClass("done"); $("#languager").Languager(); });</script></body></html>
