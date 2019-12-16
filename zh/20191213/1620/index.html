@@ -1,0 +1,545 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"><meta name="format-detection" content="telephone=no"><meta name="format-detection" content="email=no"><meta name="description" content="Buddy-Deus's Blog, share experiences and ideas"><meta name="keywords" content="buddydeus, jShow, jshow, Node.js, nodejs"><meta http-equiv="Expires" content="0"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Cache-control" content="no-cache"><meta http-equiv="Cache" content="no-cache"><title>Docker-Compose学习笔记 - Buddy-Deus's Blog</title><script src="https://code.jquery.com/jquery-3.3.1.min.js"></script><script src="https://www.googletagmanager.com/gtag/js?id=UA-141925105-1" async></script><script src="/images/global.js"></script><link rel="stylesheet" href="/css/main_style.min.css"><link rel="icon" href="/favicon.ico"></head><body><input id="navi" type="checkbox"><label class="navi-button light" for="navi">菜单</label><div class="main-navication"><div class="owner"><a href="/index.html" target="_self"><i class="icon home"></i><span>首页</span></a><a href="https://github.com/j-show/jshow" target="_blank"><i class="icon github"></i><span>Github</span></a><a href="/tags/index-zh.html" target="_self"><i class="icon tag"></i><span>标签</span></a><a href="/categories/index-zh.html" target="_self"><i class="icon category"></i><span>类别</span></a><a href="/about/index-zh.html" target="_self"><i class="icon author"></i><span>关于我</span></a></div></div><div class="wrapper" id="wrap"><div class="post-header"><div class="background"><img src="/images/post_background.jpg"></div><div class="post-title"><h1 class="title">Docker-Compose学习笔记</h1><ul class="meta"><li><i class="icon author"></i>Buddy-Deus</li><li><i class="icon clock"></i><script>document.write(calcTime(1576482302017));</script></li><li><i class="icon calendar"></i>December 13, 2019</li></ul></div></div><div class="article-content" style="max-width:800px"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#YML配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">YML配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#字节"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">字节</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时间"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">时间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#version-amp-配置版本"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">version &amp; 配置版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#networks-amp-网络配置"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">networks &amp; 网络配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#volumes-amp-挂载配置"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">volumes &amp; 挂载配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-amp-服务配置"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">services &amp; 服务配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#services-build、deploy-amp-服务配置-build、delploy"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">services build、deploy &amp; 服务配置 build、delploy</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#build-amp-构建打包"><span class="post-toc-number">2.7.1.</span> <span class="post-toc-text">build &amp; 构建打包</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#deploy-amp-部署"><span class="post-toc-number">2.7.2.</span> <span class="post-toc-text">deploy &amp; 部署</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#命令操作"><span class="post-toc-number">3.</span> <span class="post-toc-text">命令操作</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#启动与卸载"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">启动与卸载</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#构建、启动、重启、停止"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">构建、启动、重启、停止</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统部署"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">系统部署</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常用配置"><span class="post-toc-number">4.</span> <span class="post-toc-text">常用配置</span></a></li></ol>
+<blockquote>
+<p>最近在学习k8s，生生感受到k8s那种生产环境的严谨和扩容性。但反过来想了下对于小规模环境k8s显得太重了，所以重新学习了下docker-compose，特此记录下。</p>
+<p><strong><em>在现版本中docker的stack功能以兼容docker-compose功能，以下内容在不安装docker-compose时同样可以使用</em></strong></p>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>docker-compose是docker的一个命令行工具，通过yml配置文件，进行一键式的项目部署，并支持依赖检测等功能。</p>
+<blockquote>
+<p><strong>docker-compose只是一个命令行工具，所以必须手动安装docker环境，才可以确保运行正常</strong></p>
+</blockquote>
+<p>其主要分成两部分，yml配置、命令操作。总体来说使用非常简单</p>
+<blockquote>
+<p>这里不得不吐槽下，docker项目组肯定对于docker-compose没有投入太多的维护经历，官方文档系统对于常用的 <code>services</code>、<code>services.build</code> 配置说的还是清楚的，但对于扩展配置 <code>networks</code> 、<code>volumes</code> 这些就说的非常含糊。</p>
+</blockquote>
+<h1 id="YML配置"><a href="#YML配置" class="headerlink" title="YML配置"></a>YML配置</h1><blockquote>
+<p><strong>yml配置是整个docker-compose的核心</strong></p>
+<p> 但他只是一个配置文件，所以可以放在任意一个地方，文件名随意，在命令操作有讲解如何引用。</p>
+<p>个人建议，将yml配置文件 放在一个固定的地方比如：<code>/data/docker/docker-compose.yml</code></p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.7"</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">	<span class="attr">netName:</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">	<span class="attr">volumeName:</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br></pre></td></tr></table></figure>
+
+<p>这就是整个配置文件的1、2级配置结构，你必须遵循这个结构，否则会运行失败</p>
+<blockquote>
+<p>这里特别提醒下，yml语法特性（<strong>其实是解释器识别能力较弱</strong>），决定了所有的缩进必须遵循同一个规则，比如svrName的缩进用了1个tab，name下面netName也必须用1个tab，而不能改成2个空格，否则会造成block闭合失败。</p>
+<p>对于yml来说，所有的配置就是键值对。具体使用中对于不希望更改对象配置的，可以使用数组方式指向。对于需要更改的内容通过键值对</p>
+</blockquote>
+<ul>
+<li><p>说明</p>
+<p>  方式A</p>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">	<span class="attr">volumeName:</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<pre><code>方式B
+
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">	<span class="bullet">-</span> <span class="string">volumeName</span></span><br></pre></td></tr></table></figure>
+
+
+**这两种方式，效果是一样的**</code></pre><h2 id="字节"><a href="#字节" class="headerlink" title="字节"></a>字节</h2><blockquote>
+<p>配置中会使用到内存、磁盘、数据量等容量单位，默认为 <code>b</code></p>
+</blockquote>
+<ul>
+<li><p><code>b</code>：字节</p>
+</li>
+<li><p><code>k</code>：千字，替代 <code>kb</code></p>
+</li>
+<li><p><code>m</code>：兆字，替代 <code>mb</code></p>
+</li>
+<li><p><code>g</code>：吉字，替代 <code>gb</code></p>
+</li>
+</ul>
+<h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><blockquote>
+<p>配置中会使用到时间单位，默认为 <code>s</code></p>
+</blockquote>
+<ul>
+<li><p><code>us</code>：纳秒</p>
+</li>
+<li><p><code>ms</code>：毫秒</p>
+</li>
+<li><p><code>s</code>：秒</p>
+</li>
+<li><p><code>m</code>：分钟</p>
+</li>
+<li><p><code>h</code>：小时</p>
+</li>
+</ul>
+<h2 id="version-amp-配置版本"><a href="#version-amp-配置版本" class="headerlink" title="version &amp; 配置版本"></a>version &amp; 配置版本</h2><p>version用于指示配置文件所套用的版本号，参照标准是docker的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker -v</span><br><span class="line">Docker version 19.03.2, build 6a30dfc</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Version Code</th>
+<th>Docker Engine release</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3.7</td>
+<td>18.06.0+</td>
+</tr>
+<tr>
+<td>3.6</td>
+<td>18.02.0+</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>17.12.0+</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>17.09.0+</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>17.06.0+</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>17.04.0+</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>1.13.1+</td>
+</tr>
+<tr>
+<td>3.0</td>
+<td>1.13.0+</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>17.12.0+</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>17.06.0+</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>1.13.0+</td>
+</tr>
+<tr>
+<td>2.1</td>
+<td>1.12.0+</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>1.10.0+</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>1.9.1.+</td>
+</tr>
+</tbody></table>
+<p>基本上现在docker-ce的版本在18以上。所以，放心的使用3.7吧，如果用老版本docker的话，请自行选择。</p>
+<blockquote>
+<p>这里说明下，大部分教程都会从 <code>services</code> 开始说，但我觉得 <code>networks</code> 、<code>volumes</code> 属于全局性的功能配置，会对 <code>services</code> 中的配置造成一定影响，所以先行说明。</p>
+<p>除了 <code>version</code> 必须是第一个 <code>networks</code>、<code>volumes</code>、<code>services</code> 顺序没有严格要求。</p>
+</blockquote>
+<h2 id="networks-amp-网络配置"><a href="#networks-amp-网络配置" class="headerlink" title="networks &amp; 网络配置"></a>networks &amp; 网络配置</h2><p>这个配置项对应了 <code>docker network create [OPTIONS]</code> 命令中的内容，可以用于创建私有网络。</p>
+<blockquote>
+<p><code>networks</code> 的配置，作用于整个docker全局，所以可以用于一键化项目部署。</p>
+<p>在docker-compose起效时都会存在。手动 <code>docker run --net</code> 方式同样可以使用创建的网络</p>
+<p>但同时，当docker-compose被终止时，创建的网络会被删除，引用网络的容器会造成异常</p>
+<p><strong><em>注意：networks必然会创建一个网络，所以名称不允许重复（包括已创建网络，只的是<code>name</code>字段）</em></strong></p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">networks:</span></span><br><span class="line">	<span class="attr">netName:</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">net</span></span><br><span class="line">		<span class="attr">driver:</span> <span class="string">bridge</span></span><br><span class="line">		<span class="attr">ipam:</span></span><br><span class="line">			<span class="attr">driver:</span> <span class="string">default</span></span><br><span class="line">			<span class="attr">config:</span></span><br><span class="line">				<span class="bullet">-</span> <span class="attr">subnet:</span> <span class="number">100.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">/16</span></span><br></pre></td></tr></table></figure>
+
+<p>以上是我常用的配置方式，如果转换成docker命令的话就是：<code>docker network create --driver bridge --subnet=100.0.0.0/16 net</code></p>
+<blockquote>
+<p>这里特别需要注意 <code>netName</code> 这个是关联名称，在 <code>services</code> 配置中需要用到，但也只是在yml配置中才有效</p>
+<p>docker环境中有效的是 <code>name</code> 字段的内容</p>
+<p>建议把这两个用同一个名称便于管理，但（bridge、host、null、none）这几个名字属于保留字，不允许使用</p>
+</blockquote>
+<ul>
+<li><p><code>netName</code>：这是一个逻辑名称，在 <code>services</code> 配置中需要用到，在不指定 <code>name</code> 时网络名称会自动变为 <code>project_netName</code></p>
+<ul>
+<li><p><code>name</code>：真实网络名称，对应docker network –name</p>
+</li>
+<li><p><code>driver</code>：网络类型，取值bridge（默认）、host、overlay</p>
+<ul>
+<li><p>详见docker网络配置，基本上小范围使用bridge就足够了</p>
+<blockquote>
+<p><strong><em>在使用docker stack时网络只能使用overlay模式</em></strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><code>ipam</code>：ip配置</p>
+<ul>
+<li><p><code>driver</code>：作用未知</p>
+</li>
+<li><p><code>config</code>：网络配置</p>
+<ul>
+<li><code>subnet</code>：Ipv4配置，网段及掩码，不能设置网关</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>networks</code> 配置下面还有很多的配置，但针对小范围使用来说，基本没用。</p>
+</blockquote>
+<h2 id="volumes-amp-挂载配置"><a href="#volumes-amp-挂载配置" class="headerlink" title="volumes &amp; 挂载配置"></a>volumes &amp; 挂载配置</h2><p>这个配置对应了 <code>docker volume create [OPTIONS]</code> 命令中的内容，可以用于创建全局性的挂载目录或磁盘。</p>
+<blockquote>
+<p>限制与 <code>networks</code> 配置一致</p>
+<p>挂载的机制是通过类似ln的方式进行目录引用，在linux环境中类似mount效果，windows环境中类似共享连接配置</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">	<span class="attr">volumeName:</span></span><br><span class="line">		<span class="attr">external:</span></span><br><span class="line">			<span class="attr">name:</span> <span class="string">data</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="services-amp-服务配置"><a href="#services-amp-服务配置" class="headerlink" title="services &amp; 服务配置"></a>services &amp; 服务配置</h2><p>这个配置对应了 <code>docker run [OPTIONS]</code> 命令中的内容，用于部署具体容器（包括打包）</p>
+<blockquote>
+<p>在看具体配置说明前，要先明确两点</p>
+<p>1、services下的内容，可以简单的理解成容器，但本质上是一种服务配置，即它可以用于多个容器的管理/分配或参与一个服务的整个生命周期（构建、运行、部署、销毁）</p>
+<p>2、services下的内容，不存在运行的先后顺序，他们是并行执行的，即不存在svrName1启动后再启动svrName2，svrName1和svrName2是同时被启动</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">container_name:</span> <span class="string">redis</span></span><br><span class="line">		<span class="attr">image:</span> <span class="attr">redis:alpine</span></span><br><span class="line">		<span class="attr">command:</span> <span class="string">redis-server</span> <span class="bullet">--appendonly</span> <span class="literal">yes</span></span><br><span class="line">		<span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">		<span class="attr">environment:</span></span><br><span class="line">			<span class="attr">SHOW:</span> <span class="string">'true'</span></span><br><span class="line">		<span class="attr">networks:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">net</span></span><br><span class="line">		<span class="attr">volumes:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">/data/docker/redis:/data</span></span><br><span class="line">		<span class="attr">ports:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="number">6372</span><span class="string">:6372</span></span><br><span class="line">		<span class="attr">depends_on:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">mongodb</span></span><br></pre></td></tr></table></figure>
+
+<p>这是一段标准的redis部署配置（depends_on除外）</p>
+<p>所对应的docker命令为：<code>docker run --net net --name redis -d -v /data/docker/redis:/data -p 6372:6372 redis:alpine redis-server --appendonly yes</code></p>
+<ul>
+<li><p><code>svrName</code>：与 <code>networks</code> 中一样，这里是个逻辑名字</p>
+<blockquote>
+<p>在不指定 <code>container_name</code> 时容器名称会自动变为 <code>project_svrName</code></p>
+</blockquote>
+<ul>
+<li><p><code>container_name</code>：真实容器名称</p>
+<blockquote>
+<p>对应了 <code>docker run --name</code> 参数</p>
+</blockquote>
+</li>
+<li><p><code>image</code>：容器所属镜像</p>
+<blockquote>
+<p>如果本地不存在会尝试下载，与 <code>docker images</code> 内容一致</p>
+</blockquote>
+</li>
+<li><p><code>command</code>：覆盖容器启动命令</p>
+<blockquote>
+<p>之所以redis举例是应为它是典型的，需要覆盖默认启动命令的例子。</p>
+<p>支持字符串数组，或者直接的命令</p>
+</blockquote>
+</li>
+<li><p><code>restart</code>：重启模式</p>
+<ul>
+<li><p><code>no</code> 默认设置，停止后不重启</p>
+</li>
+<li><p><code>always</code> 总是重启</p>
+</li>
+<li><p><code>on-failure</code> 遇到异常终止时重启</p>
+</li>
+<li><p><code>unless-stopped</code> 遇到容器停止时重启</p>
+</li>
+</ul>
+</li>
+<li><p><code>environment</code>：容器带入的环境变量</p>
+<blockquote>
+<p>对应的有个 <code>env_file</code> 的配置，可以通过引用外部文件形式读取内容</p>
+</blockquote>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">env_file:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">./test.env</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>    - test.env
+
+    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">REDIS_PORT=6379</span></span><br></pre></td></tr></table></figure>
+
+    ---
+
+- `networks`：网络配置（**这里引用的是 `networks` 中的 `netName`**）
+
+    &gt; 对应了 `docker run --net` 参数
+    &gt;
+    &gt; 网络配置还有中指定ip地址的方式，比较适用高安全级别的部署要求（比如严格控制容器间的访问情况）
+
+    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">networks:</span></span><br><span class="line">			<span class="attr">netName:</span></span><br><span class="line">				<span class="attr">ipv4_address:</span> <span class="number">10.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">				<span class="attr">ipv6_address:</span> <span class="number">2001</span><span class="string">:3984:3989:10</span></span><br></pre></td></tr></table></figure>
+
+
+- `volumes`：挂载配置（本地路径:容器路径）
+
+    &gt; 对应了 `docker run -v` 参数
+    &gt;
+    &gt; 挂载配置的本地路径部分，允许与根层的 `volumes` 配置联合使用，引用 `volumeName` 即可
+
+    <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">volumes:</span></span><br><span class="line">			<span class="bullet">-</span> <span class="string">volumeName/test:/data</span></span><br></pre></td></tr></table></figure>
+
+
+    &gt; 以上效果，即引用根层的 `volumeName` 下的 `test` 目录挂载至容器中的 `/data`目录
+    &gt;
+    &gt; **volumes配置时允许使用相对路径，相对路径以yml配置文件所在的目录为基准**
+
+- `ports`：端口配置（容器端口:外部端口/协议类型）
+
+    &gt; 对应了 `docker run -p` 参数
+
+- `depends_on`：（**这里引用的是 `services` 中的 `svrName`**）
+
+    &gt; 可以说 `depends_on` 配置是docker-compose最重要的功能（个人觉得），它可以设置依赖项目，依赖项目未运行前，本项目处于等待状态。
+    &gt;
+    &gt; 但这里要注意 `depends_on` 中的项目运行顺序是没有先后顺序的
+    &gt;
+    &gt; 我们可以通过依赖引用的方式达成顺序执行的目的，但这样会造成配置非常复杂
+
+&gt; 在services章节，我这里少写了很多配置，比如：`links`、`expose`、`init`、`labels` 诸如此类的，这些并不是无效，但在时间过程中作用有限，有兴趣的可以自行学习</code></pre><hr>
+<h2 id="services-build、deploy-amp-服务配置-build、delploy"><a href="#services-build、deploy-amp-服务配置-build、delploy" class="headerlink" title="services build、deploy &amp; 服务配置 build、delploy"></a>services build、deploy &amp; 服务配置 build、delploy</h2><p>之前说过services不仅仅是个容器配置，而是参与了服务的整个生命周期，而这就依赖于 <code>build</code>、<code>deploy</code> 配置来实现。</p>
+<p>这两个配置相对独立，分别对应了服务的构建（打包）、部署阶段</p>
+<h3 id="build-amp-构建打包"><a href="#build-amp-构建打包" class="headerlink" title="build &amp; 构建打包"></a>build &amp; 构建打包</h3><blockquote>
+<p>对应了 <code>docker build [OPTIONS]</code> 命令</p>
+<p><strong><em>build的所有配置在docker stack状态下是被忽略的！</em></strong></p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">build:</span></span><br><span class="line">			<span class="attr">context:</span> <span class="string">./dir</span></span><br><span class="line">			<span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">			<span class="attr">image:</span> <span class="attr">imgName:tag</span></span><br><span class="line">			<span class="attr">args:</span></span><br><span class="line">				<span class="attr">buildno:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>context</code>：构建的工作目录，相对目录基于yml文件所在计算</p>
+</li>
+<li><p><code>dockerfile</code>：工作目录下的dockerfile文件名，允许使用其他名称</p>
+</li>
+<li><p><code>image</code>：镜像名称</p>
+<blockquote>
+<p>可指定tag，默认以laster为tag名称</p>
+</blockquote>
+</li>
+<li><p><code>args</code>：构建带入参数</p>
+<blockquote>
+<p>在运行dockerfile时以字符串方式带入的参数</p>
+</blockquote>
+  <figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ARG</span> buildno</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"Build number: <span class="variable">$buildno</span>"</span></span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<hr>
+<h3 id="deploy-amp-部署"><a href="#deploy-amp-部署" class="headerlink" title="deploy &amp; 部署"></a>deploy &amp; 部署</h3><blockquote>
+<p><strong><em>deploy是个特殊的配置，它只在docker stack状态下工作，docker-compose时被忽略</em></strong></p>
+<p>这里不得不说一下docker stack是什么。简单的说，它是一个被docker吸收为内部功能的py脚本。</p>
+<p>常用于集群部署（在之后会单独讲下docker集群，主要是对这块知识我还没有学透），是docker生产环境下的一个非常好用的模式，天生带负载均衡。</p>
+<p>我们可以简单的认为docker run用于开发环境/单机环境，docker stack用于生产环境/集群环境（分布式环境）</p>
+</blockquote>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="attr">svrName:</span></span><br><span class="line">		<span class="attr">image:</span> <span class="attr">redis:alpine</span></span><br><span class="line">		<span class="attr">deploy:</span></span><br><span class="line">			<span class="attr">mode:</span> <span class="string">global</span></span><br><span class="line">			<span class="attr">replicas:</span> <span class="number">6</span></span><br><span class="line">			<span class="attr">resources:</span></span><br><span class="line">				<span class="attr">limits:</span></span><br><span class="line">					<span class="attr">cpus:</span> <span class="string">'0.5'</span></span><br><span class="line">					<span class="attr">memory:</span> <span class="number">50</span><span class="string">M</span></span><br><span class="line">				<span class="attr">reservations:</span></span><br><span class="line">					<span class="attr">cpus:</span> <span class="string">'0.25'</span></span><br><span class="line">					<span class="attr">memory:</span> <span class="number">20</span><span class="string">M</span></span><br><span class="line">			<span class="attr">restart_policy:</span></span><br><span class="line">				<span class="attr">condition:</span> <span class="string">on-failure</span></span><br><span class="line">				<span class="attr">delay:</span> <span class="number">0</span></span><br><span class="line">				<span class="attr">max_attempts:</span> <span class="number">0</span></span><br><span class="line">			<span class="attr">rollback_config:</span></span><br><span class="line">				<span class="attr">parallelism:</span> <span class="number">0</span></span><br><span class="line">				<span class="attr">delay:</span> <span class="number">0</span></span><br><span class="line">				<span class="attr">failure_action:</span> <span class="string">pause</span></span><br><span class="line">				<span class="attr">max_failure_ratio:</span> <span class="number">0</span></span><br><span class="line">				<span class="attr">order:</span> <span class="string">stop-first</span></span><br><span class="line">			<span class="attr">update_config:</span></span><br><span class="line">				<span class="attr">parallelism:</span> <span class="number">2</span></span><br><span class="line">				<span class="attr">delay:</span> <span class="number">10</span><span class="string">s</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong><em>deploy 必须指定一个image，因为docker stack会忽略build配置，所以必须制定一个存在的image作为内容</em></strong></p>
+</blockquote>
+<ul>
+<li><p><code>mode</code>：节点模式</p>
+<blockquote>
+<p>global：每个节点只有一个容器</p>
+<p>replicated：多个节点共用一个容器</p>
+</blockquote>
+</li>
+<li><p><code>replicas</code>：容器数量，当 <code>mode=replicated</code> 时生效</p>
+</li>
+<li><p><code>resources</code>：配置cpu、内存资源限制</p>
+<blockquote>
+<p>资源配置需要非常谨慎，当容器尝试使用超过上限的资源时会触发系统级异常，并被管理器杀死。</p>
+<p>因此当限制过低时，会造成容器陷入死循环状态。</p>
+</blockquote>
+<ul>
+<li><p><code>limits</code>：资源使用上限</p>
+<ul>
+<li><code>cpus</code>：cpu使用情况，小数形式，0.5=50%</li>
+<li><code>memory</code>：内存使用情况，单位 <a href="#字节">字节</a></li>
+</ul>
+</li>
+<li><p><code>reservations</code>：保留资源，即在资源富余时仍划分限定资源给容器专属使用</p>
+</li>
+</ul>
+</li>
+<li><p><code>restart_policy</code>：配置如何重启</p>
+<blockquote>
+<p>会替换services中的restart配置</p>
+</blockquote>
+<ul>
+<li><p><code>condition</code>：重启条件，取值 <code>none</code>、<code>on-failure</code>、<code>any</code>，默认 <code>any</code></p>
+</li>
+<li><p><code>delay</code>：重启之间的等待时间，默认：0，单位 <a href="#时间">时间</a></p>
+</li>
+<li><p><code>max_attempts</code>：重启尝试次数，默认：不放弃，单位次数</p>
+</li>
+<li><p><code>window</code>：重启后等待时间，默认：立即决定，单位 <a href="#时间">时间</a></p>
+<blockquote>
+<p><code>window</code> 作用范围是容器启动之后，开始计算是否判定需要重启</p>
+<p>假设，window=10s，那么在10s以内，即使容器崩溃了也不会重启，而要等待10s之后才会</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><code>rollback_config</code>：配置更新失败后如何回滚服务</p>
+<ul>
+<li><p><code>parallelism</code>：一次回滚多少容器数，0=所有容器同时回滚</p>
+<blockquote>
+<p>此参数对应了 <code>mode=replicated</code> 时会产生多个容器的状态</p>
+</blockquote>
+</li>
+<li><p><code>delay</code>：每个容器回滚之间的等待时间，单位 <a href="#时间">时间</a></p>
+</li>
+<li><p><code>failure_action</code>：回滚失败后的处理方式，默认 <code>pause</code></p>
+<ul>
+<li><p><code>continue</code>：继续尝试</p>
+</li>
+<li><p><code>pause</code>：停止尝试</p>
+</li>
+</ul>
+</li>
+<li><p><code>monitor</code>：失败后检测持续时间，单位 <a href="#时间">时间</a></p>
+<blockquote>
+<p><code>monitor</code> 作用范围是容器启动失败之后，开始计算，启动成功则重置</p>
+</blockquote>
+</li>
+<li><p><code>max_failure_ratio</code>：回滚期间可以容忍的错误次数</p>
+</li>
+<li><p><code>order</code>：回滚期间的操作顺序</p>
+<ul>
+<li><p><code>stop-first</code>：开始新的一个前停止</p>
+</li>
+<li><p><code>start-first</code>：首先启动</p>
+<blockquote>
+<p>类似建立一个顺序执行的回滚列表，初始内容为所有更新的命令，stop-first每次都放在列表第一个，start-first放在最后</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>update_config</code>：配置如何更新服务</p>
+<blockquote>
+<p>常和 <code>rollback_config</code> 联合使用</p>
+</blockquote>
+<ul>
+<li><p><code>parallelism</code>：一次更新多少容器数，0=所有容器同时回滚</p>
+<blockquote>
+<p>此参数对应了 <code>mode=replicated</code> 时会产生多个容器的状态</p>
+</blockquote>
+</li>
+<li><p><code>delay</code>：每个容器更新之间的等待时间，单位 <a href="#时间">时间</a></p>
+</li>
+<li><p><code>failure_action</code>：更新失败后的处理方式，默认 <code>pause</code></p>
+<ul>
+<li><p><code>continue</code>：继续尝试</p>
+</li>
+<li><p><code>pause</code>：停止尝试</p>
+</li>
+<li><p><code>rollback</code>：回滚</p>
+</li>
+</ul>
+</li>
+<li><p><code>monitor</code>：失败后检测持续时间，单位 <a href="#时间">时间</a></p>
+<blockquote>
+<p><code>monitor</code> 作用范围是容器启动失败之后，开始计算，启动成功则重置</p>
+</blockquote>
+</li>
+<li><p><code>max_failure_ratio</code>：更新期间可以容忍的错误次数</p>
+</li>
+<li><p><code>order</code>：更新期间的操作顺序</p>
+<ul>
+<li><p><code>stop-first</code>：开始新的一个前停止</p>
+</li>
+<li><p><code>start-first</code>：首先启动</p>
+<blockquote>
+<p>类似建立一个顺序执行的更新列表，初始内容是全部需要更新的命令，stop-first每次都放在列表第一个，start-first放在最后</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>update_config</code> 与 <code>rollback_config</code> 常联合适用，独立对应 <code>docker service</code> 命令</p>
+<p>它们的生效场景在于服务已经存在，而需要更新服务镜像的时候，因单独一个配置文件进行操作。</p>
+</blockquote>
+<h1 id="命令操作"><a href="#命令操作" class="headerlink" title="命令操作"></a>命令操作</h1><p>docker-compose的命令非常丰富，这里只讲基本的几个</p>
+<h2 id="启动与卸载"><a href="#启动与卸载" class="headerlink" title="启动与卸载"></a>启动与卸载</h2><p>之前我们讲了大段的YML配置，其实本质上就是docker命令的配置简化，通过 <code>-f</code> 参数进行指向，来加载配置。</p>
+<ul>
+<li><p>注册：<code>docker-compose -f /data/docker/docker-compose.yml up -d</code></p>
+<blockquote>
+<p><code>up</code> 是注册命令，<code>-d</code> 是静默方式运行（类似于docker run -d）</p>
+<p>这里要强调，运行结果会根据配置内容创建 <code>网络/挂载/容器/服务</code>，但这些在主动执行卸载命令前都是永久化的，因此如果单独通过命令方式加载服务，则需要特别注意docker当前运行的状态，避免造成重复操作。</p>
+</blockquote>
+</li>
+<li><p>卸载：<code>docker-compose -f /data/docker/docker-compose.yml down</code></p>
+<blockquote>
+<p><strong><em>执行卸载命令后，所有配置中的内容会被删除！！！</em></strong></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="构建、启动、重启、停止"><a href="#构建、启动、重启、停止" class="headerlink" title="构建、启动、重启、停止"></a>构建、启动、重启、停止</h2><p>针对于已经执行过注册命令后，我们仍然会需要手动操作某些服务的情况。</p>
+<p><strong><em>重要：我们操作的所有内容是针对配置文件中的服务名（svrName），而非容器！！！</em></strong></p>
+<ul>
+<li><p>构建：<code>docker-compose -f /data/docker/docker-compose.yml build svrName</code></p>
+</li>
+<li><p>启动：<code>docker-compose -f /data/docker/docker-compose.yml start svrName</code></p>
+</li>
+<li><p>重启：<code>docker-compose -f /data/docker/docker-compose.yml restart svrName</code></p>
+</li>
+<li><p>停止：<code>docker-compose -f /data/docker/docker-compose.yml stop svrName</code></p>
+</li>
+<li><p>暂停：<code>docker-compose -f /data/docker/docker-compose.yml pause svrName</code></p>
+</li>
+<li><p>取消暂停：<code>docker-compose -f /data/docker/docker-compose.yml unpause svrName</code></p>
+</li>
+</ul>
+<p>至于其他的指令，docker-compose也有支持，不过建议还是用docker本身的比较好</p>
+<h2 id="系统部署"><a href="#系统部署" class="headerlink" title="系统部署"></a>系统部署</h2><p>开篇我们已经说过docker-compose只是一个命令行工具。因此要自动化使用，只有两种方式</p>
+<ol>
+<li><p>把注册命令写入到启动脚本中，在开机自动运行。</p>
+<blockquote>
+<p>当然，这种方式是我们应该放弃的，原因也很简单。你有个注册，那卸载呢？意外重启呢？</p>
+</blockquote>
+</li>
+<li><p>把docker-compose包装成一个服务。</p>
+<ul>
+<li><p>建立服务脚本</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /etc/rc.d/init.d</span><br><span class="line">$ vi ./docker-compose</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ol>
+<pre><code>    - docker-compose 文件内容
+
+    <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># chkconfi<span class="variable">g:</span> <span class="number">2345</span> <span class="number">85</span> <span class="number">15</span></span><br><span class="line"># description: docker-compose service</span><br><span class="line"></span><br><span class="line">EXEC=/usr/local/bin/docker-compose</span><br><span class="line">YML=/data/docker/docker-compose.yml</span><br><span class="line"></span><br><span class="line">case $<span class="number">1</span> in</span><br><span class="line">  start)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML <span class="keyword">up</span> -d</span><br><span class="line">    ;;</span><br><span class="line">  <span class="keyword">stop</span>)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML down</span><br><span class="line">    ;;</span><br><span class="line">  restart)</span><br><span class="line">    $EXEC -<span class="keyword">f</span> $YML restart nginx</span><br><span class="line">    ;;</span><br><span class="line">  *)</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"Usage: $0 (start|stop|restart)"</span></span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+
+    &gt; 这里说明下，我的部署服务中通过 `depends_on` 配置让 `nginx` 在所有服务之后运行，因此可以把它看成一个总服务入口。
+
+- 注册服务
+
+    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x ./docker-compose</span><br><span class="line">$ chkconfig --add docker-compose</span><br></pre></td></tr></table></figure>
+
+
+- 启动服务
+
+    <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ service start docker-compose</span><br></pre></td></tr></table></figure></code></pre><blockquote>
+<p>通过这样的方式，就可以完美的运行docker-compose了。</p>
+<p>当然，如果使用docker stack方式进行集群部署的话，进行适当的脚本改造也可以满足功能</p>
+</blockquote>
+<h1 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h1><blockquote>
+<p>这里提供下常用的几种工具配置。</p>
+<p>docker-compose配置路径为 /data/docker/docker-compose.yml</p>
+<p>docker工作路径为 /data/docker</p>
+</blockquote>
+<ul>
+<li><p>global</p>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.7"</span></span><br><span class="line"><span class="attr">network:</span></span><br><span class="line">	<span class="attr">net:</span></span><br><span class="line">		<span class="attr">name:</span> <span class="string">net</span></span><br><span class="line">		<span class="attr">ipam:</span></span><br><span class="line">			<span class="attr">driver:</span> <span class="string">default</span></span><br><span class="line">			<span class="attr">config:</span></span><br><span class="line">				<span class="bullet">-</span> <span class="attr">subnet:</span> <span class="number">100.0</span><span class="number">.0</span><span class="number">.0</span><span class="string">/16</span></span><br><span class="line"><span class="attr">services:</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>redis</p>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">redis:</span></span><br><span class="line">	<span class="attr">container_name:</span> <span class="string">redis</span></span><br><span class="line">	<span class="attr">image:</span> <span class="attr">redis:alpine</span></span><br><span class="line">	<span class="attr">command:</span> <span class="string">redis-server</span> <span class="bullet">--appendonly</span> <span class="literal">yes</span></span><br><span class="line">	<span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">	<span class="attr">networks:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">net</span></span><br><span class="line">	<span class="attr">volumes:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/redis:/data</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>mongodb</p>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mongodb:</span></span><br><span class="line">	<span class="attr">container_name:</span> <span class="string">mongodb</span></span><br><span class="line">	<span class="attr">image:</span> <span class="string">mongo</span></span><br><span class="line">	<span class="attr">command:</span> <span class="string">mongod</span> <span class="bullet">--directoryperdb</span></span><br><span class="line">	<span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">	<span class="attr">networks:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">net</span></span><br><span class="line">	<span class="attr">volumes:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/mongodb:/data/db</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>nginx</p>
+  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">nginx:</span></span><br><span class="line">	<span class="attr">container_name:</span> <span class="string">nginx</span></span><br><span class="line">	<span class="attr">image:</span> <span class="attr">nginx:alpine</span></span><br><span class="line">	<span class="attr">networks:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">net</span></span><br><span class="line">	<span class="attr">volumes:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/nginx.conf:/etc/nginx/nginx.conf</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/conf.d:/etc/nginx/conf.d</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/log:/etc/nginx/log</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/ssl:/ssl</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">/data/docker/nginx/wwwroot:/wwwroot</span></span><br><span class="line">	<span class="attr">ports:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="number">80</span><span class="string">:80</span></span><br><span class="line">		<span class="bullet">-</span> <span class="number">443</span><span class="string">:443</span></span><br><span class="line">	<span class="attr">depends_on:</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">		<span class="bullet">-</span> <span class="string">mongodb</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<pre><code>&gt; `volumes` 下面的ssl目录绑定，用于ssl证书的导入
+&gt;
+&gt; `depends_on` 下面因放所有服务的列表</code></pre></div><div class="article-meta" style="max-width:800px"><div class="tags"><i class="icon tag"></i><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker">docker</a></li></ul></div><div class="categories"><i class="icon category"></i><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/study">study</a></li></ul></div></div><ul class="navication"><li class="home"><a href="/"><i class="icon home"></i></a></li><li><a href="/zh/20190615/2212/"><i class="icon arror-right"></i></a></li></ul><div class="page-footer"><div class="bottom"><p class="copyright">© 2019 Buddy-Deus's Blog<br><script type="text/javascript">analytics_google("UA-141925105-1")</script><script type="text/javascript">analytics_cnzz("1277704291")</script><small>POWER BY&nbsp;<a href="https://hexo.io" target="_blank">HEXO</a></small>&nbsp;|&nbsp;<small>THEME BY&nbsp;<a href="https://github.com/BoizZ/hexo-theme-laughing" target="_blank">LAUGHING</a></small></p></div></div></div><div id="dialog" style="display:none;"></div><script type="text/javascript">$(function () { $("#wrap").addClass("done"); $("#languager").Languager(); });</script></body></html>
